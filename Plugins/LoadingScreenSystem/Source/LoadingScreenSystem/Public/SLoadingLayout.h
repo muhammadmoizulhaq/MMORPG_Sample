@@ -9,10 +9,12 @@
 #include "Animation/CurveSequence.h"
 #include "Slate/DeferredCleanupSlateBrush.h"
 #include "Widgets/DeclarativeSyntaxSupport.h"
+#include "LoadingScreenSettings.h"
 
 class UFont;
 class UMaterialInstance;
 class UTexture;
+class FDeferredCleanupSlateBrush;
 
 class LOADINGSCREENSYSTEM_API SLoadingLayout : public SCompoundWidget, public FGCObject
 {
@@ -26,6 +28,8 @@ public:
 	virtual FString GetReferencerName() const override;
 	//~ End FGCObject interface
 	static float PointSizeToSlateUnits(float InPointSize);
-protected:
+private:
 	float GetDPIScale() const;
+private:
+	TSharedPtr<FDeferredCleanupSlateBrush> LoadingScreenBrush;
 };

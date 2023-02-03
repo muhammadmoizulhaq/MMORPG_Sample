@@ -55,43 +55,83 @@ TArray<TSoftClassPtr<UObject>> AMMORPGHUD::GetPopUps()
 	return MyPopUps;
 }
 
+void AMMORPGHUD::SetCurrentWidgetEnum(EWidgetEnum InWidget)
+{
+	MyCurrentWidgetEnum = InWidget;
+}
+
+void AMMORPGHUD::SetCurrentPopUpEnum(EPopUpEnum InPopUp)
+{
+	MyCurrentPopUpEnum = InPopUp;
+}
+
+EWidgetEnum AMMORPGHUD::GetCurrentWidgetEnum()
+{
+	return MyCurrentWidgetEnum;
+}
+
+EPopUpEnum AMMORPGHUD::GetCurrentPopUpEnum()
+{
+	return MyCurrentPopUpEnum;
+}
+
+void AMMORPGHUD::SetCurrentWidget(UUserWidget* InWidget)
+{
+	MyCurrentWidget = InWidget;
+}
+
+void AMMORPGHUD::SetCurrentPopUp(UUserWidget* InPopUp)
+{
+	MyCurrentPopUp = InPopUp;
+}
+
+UUserWidget* AMMORPGHUD::GetCurrentWidget()
+{
+	return MyCurrentWidget;
+}
+
+UUserWidget* AMMORPGHUD::GetCurrentPopUp()
+{
+	return MyCurrentPopUp;
+}
+
 UUserWidget* AMMORPGHUD::ShowWidgets(EWidgetEnum InWidgets, EPopUpEnum InPopUps, bool bShowMouseCursor, bool bDisableInput)
 {
 	UE_LOG(MMORPGHUD, Log, TEXT("Show Widget"));
-	if (InWidgets == MyCurrentWidgetEnum)
+	if (InWidgets == GetCurrentWidgetEnum())
 	{
-		return MyCurrentWidget;
+		return GetCurrentWidget();
 	}
 	TSubclassOf<UUserWidget> MyWidget;
 	TSubclassOf<UUserWidget> MyPopUp;
 	GetWidgetsToLoad(InWidgets, InPopUps, MyWidget, MyPopUp);
 	if (MyWidgetMap.Contains(InWidgets))
-	{/*
-		MyCurrentWidget = *MyWidget;
-		MyCurrentWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		MyCurrentWidget->Initialize();*/
+	{
+		SetCurrentWidget(Cast<UUserWidget>(MyWidget));
+		GetCurrentWidget()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		GetCurrentWidget()->Initialize();
 	}
 	else
-	{/*
-		MyCurrentWidget = CreateWidget<UUserWidget>(UGameplayStatics::GetGameInstance(GetWorld()), MyWidget);
-		MyWidgetMap.Add(InWidgets, MyCurrentWidget);
-		MyCurrentWidget->AddToViewport();
-		MyCurrentWidget->Initialize();*/
+	{
+		SetCurrentWidget(CreateWidget<UUserWidget>(UGameplayStatics::GetGameInstance(GetWorld()), MyWidget));
+		//MyWidgetMap.Add(InWidgets, *GetCurrentWidget());
+		GetCurrentWidget()->AddToViewport();
+		GetCurrentWidget()->Initialize();
 	}
-	/*UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(bShowMouseCursor);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(bShowMouseCursor);
 	if (bDisableInput)
 	{
-		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(UGameplayStatics::GetPlayerController(GetWorld(), 0), Cast<UWidget>(MyCurrentWidget), EMouseLockMode::DoNotLock);
-		MyCurrentWidgetEnum = InWidgets;
-		return MyCurrentWidget;
+		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(UGameplayStatics::GetPlayerController(GetWorld(), 0), Cast<UWidget>(GetCurrentWidget()), EMouseLockMode::DoNotLock);
+		SetCurrentWidgetEnum(InWidgets);
+		return GetCurrentWidget();
 	}
 	else
 	{
 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(UGameplayStatics::GetPlayerController(GetWorld(), 0), nullptr, EMouseLockMode::DoNotLock, false);
-		MyCurrentWidgetEnum = InWidgets;
-		return MyCurrentWidget;
-	}*/
-	if (InPopUps != EPopUpEnum::NONE)
+		SetCurrentWidgetEnum(InWidgets);
+		return GetCurrentWidget();
+	}
+	if (MyPopUpMap.Contains(InPopUps))
 	{
 		UE_LOG(MMORPGHUD, Warning, TEXT("PopUps to open"));
 	}
@@ -99,7 +139,7 @@ UUserWidget* AMMORPGHUD::ShowWidgets(EWidgetEnum InWidgets, EPopUpEnum InPopUps,
 	{
 		UE_LOG(MMORPGHUD, Warning, TEXT("No PopUps to open"));
 	}
-	return nullptr;
+	return GetCurrentWidget();
 }
 
 void AMMORPGHUD::HideWidgets(EWidgetEnum InWidgets, EPopUpEnum InPopUps)

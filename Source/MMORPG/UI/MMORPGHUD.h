@@ -49,6 +49,22 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "UI")
 	TArray<TSoftClassPtr<UObject>> GetPopUps();
 	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetCurrentWidgetEnum(EWidgetEnum InWidget);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetCurrentPopUpEnum(EPopUpEnum InPopUp);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "UI")
+	EWidgetEnum GetCurrentWidgetEnum();
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "UI")
+	EPopUpEnum GetCurrentPopUpEnum();
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetCurrentWidget(UUserWidget* InWidget);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void SetCurrentPopUp(UUserWidget* InPopUp);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "UI")
+	UUserWidget* GetCurrentWidget();
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "UI")
+	UUserWidget* GetCurrentPopUp();
+	UFUNCTION(BlueprintCallable, Category = "UI")
 	UUserWidget* ShowWidgets(EWidgetEnum InWidgets = EWidgetEnum::NONE, EPopUpEnum InPopUps = EPopUpEnum::NONE, bool bShowMouseCursor = false, bool bDisableInput = false);
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void HideWidgets(EWidgetEnum InWidgets = EWidgetEnum::NONE, EPopUpEnum InPopUps = EPopUpEnum::NONE);

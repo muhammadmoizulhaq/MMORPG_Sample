@@ -53,12 +53,9 @@ class LOADINGSCREENSYSTEM_API ULoadingScreenSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
 public:
-	///** The startup screen for the project. */
-	//UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Screens")
-	//FLoadingScreenSettingsStruct StartupLoadingScreen;
 	/** The default Load screen between maps. */
 	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Screens")
-	FLoadingScreenSettingsStruct DefaultLoadingScreen;
+	FLoadingScreenSettingsStruct LoadingScreenSetting;
 	/** The font to display the tips in. */
 	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category = "Advice")
 	FSlateFontInfo TipFontInfo;
