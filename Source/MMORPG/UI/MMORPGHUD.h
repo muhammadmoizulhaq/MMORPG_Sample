@@ -67,7 +67,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	UUserWidget* ShowWidgets(EWidgetEnum InWidgets = EWidgetEnum::NONE, EPopUpEnum InPopUps = EPopUpEnum::NONE, bool bShowMouseCursor = false, bool bDisableInput = false);
 	UFUNCTION(BlueprintCallable, Category = "UI")
-	void HideWidgets(EWidgetEnum InWidgets = EWidgetEnum::NONE, EPopUpEnum InPopUps = EPopUpEnum::NONE);
+	void HideWidgets(EWidgetEnum InWidgets = EWidgetEnum::NONE, bool bShowMouseCursor = false);
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void HideCurrentWidget();
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	bool GetWidgetsToLoad(EWidgetEnum InWidget, EPopUpEnum InPopUp, TSubclassOf<UUserWidget>& OutWidget, TSubclassOf<UUserWidget>& OutPopUp);
 };

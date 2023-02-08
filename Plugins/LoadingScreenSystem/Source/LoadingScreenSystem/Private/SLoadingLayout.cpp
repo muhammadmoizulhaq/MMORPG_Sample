@@ -105,7 +105,7 @@ void SLoadingLayout::Construct(const FArguments& InArgs)
 				[
 					SNew(STextBlock)
 					.Text(LoadingScreenSettingsStruct.LoadingText)
-				.Font(LoadingFontInfo)
+					.Font(LoadingFontInfo)
 				]
 
 				+ SHorizontalBox::Slot()

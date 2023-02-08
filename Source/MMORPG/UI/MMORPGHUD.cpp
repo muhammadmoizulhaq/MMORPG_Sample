@@ -131,35 +131,65 @@ UUserWidget* AMMORPGHUD::ShowWidgets(EWidgetEnum InWidgets, EPopUpEnum InPopUps,
 		SetCurrentWidgetEnum(InWidgets);
 		return GetCurrentWidget();
 	}
-	if (MyPopUpMap.Contains(InPopUps))
+	HideWidgets(EWidgetEnum::NONE, false);
+	if (MyPopUpMap.Find(InPopUps) != nullptr)
 	{
-		UE_LOG(MMORPGHUD, Warning, TEXT("PopUps to open"));
+		SetCurrentPopUp(Cast<UUserWidget>(MyPopUp));
+		GetCurrentPopUp()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		GetCurrentPopUp()->Initialize();
+		return GetCurrentPopUp();
 	}
-	else
+	switch (InPopUps)
 	{
-		UE_LOG(MMORPGHUD, Warning, TEXT("No PopUps to open"));
+	case EPopUpEnum::NONE:
+		return GetCurrentPopUp();
+		break;
+	case EPopUpEnum::LOADING:
+		SetCurrentPopUp(CreateWidget<UUserWidget>(UGameplayStatics::GetGameInstance(GetWorld()), MyPopUp));
+		break;
+	default:
+		break;
 	}
-	return GetCurrentWidget();
+	GetCurrentPopUp()->AddToViewport(10);
+	//MyPopUpMap.Add(InPopUps, GetCurrentPopUp());
+	GetCurrentPopUp()->Initialize();
+	return GetCurrentPopUp();
 }
 
-void AMMORPGHUD::HideWidgets(EWidgetEnum InWidgets, EPopUpEnum InPopUps)
+void AMMORPGHUD::HideWidgets(EWidgetEnum InWidgets, bool bShowMouseCursor)
 {
-	if (InWidgets != EWidgetEnum::NONE)
+	UE_LOG(MMORPGHUD, Log, TEXT("Hide Widget"));
+	if (MyWidgetMap.Contains(InWidgets))
 	{
-		UE_LOG(MMORPGHUD, Warning, TEXT("Widgets to close"));
+		//UUserWidget* Temp = Cast<UUserWidget>(MyWidgetMap.Find(InWidgets));
+		if (GetCurrentWidget()->GetVisibility() == ESlateVisibility::SelfHitTestInvisible)
+		{
+			GetCurrentWidget()->SetVisibility(ESlateVisibility::Collapsed);
+			GetCurrentWidget()->Destruct();
+			SetCurrentWidgetEnum(EWidgetEnum::NONE);
+			SetCurrentWidget(nullptr);
+		}
 	}
-	else
+	UWidgetBlueprintLibrary::SetInputMode_GameOnly(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(bShowMouseCursor);
+	if (IsValid(GetCurrentPopUp()))
 	{
-		UE_LOG(MMORPGHUD, Warning, TEXT("No Widgets to close"));
+		UE_LOG(MMORPGHUD, Warning, TEXT("Hide %s PopUp"), *GetCurrentPopUp()->GetName());
+		if (GetCurrentPopUp()->GetVisibility() == ESlateVisibility::SelfHitTestInvisible)
+		{
+			GetCurrentPopUp()->SetVisibility(ESlateVisibility::Collapsed);
+			GetCurrentPopUp()->Destruct();
+		}
+		SetCurrentPopUp(nullptr);
 	}
-	if (InPopUps != EPopUpEnum::NONE)
-	{
-		UE_LOG(MMORPGHUD, Warning, TEXT("PopUps to close"));
-	}
-	else
-	{
-		UE_LOG(MMORPGHUD, Warning, TEXT("No PopUps to close"));
-	}
+}
+
+void AMMORPGHUD::HideCurrentWidget()
+{
+	if (!GetCurrentWidget()) { return; }
+	GetCurrentWidget()->SetVisibility(ESlateVisibility::Collapsed);
+	SetCurrentWidgetEnum(EWidgetEnum::NONE);
+	SetCurrentWidget(nullptr);
 }
 
 bool AMMORPGHUD::GetWidgetsToLoad(EWidgetEnum InWidget, EPopUpEnum InPopUp, TSubclassOf<UUserWidget>& OutWidget, TSubclassOf<UUserWidget>& OutPopUp)
