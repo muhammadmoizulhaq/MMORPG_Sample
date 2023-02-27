@@ -12,4 +12,10 @@ UCLASS()
 class MMORPG_API UMMORPGGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+private:
+	FDelegateHandle TickDelegateHandle;
+protected:
+	virtual void Init() override;
+	virtual void Shutdown() override;
+	bool Tick(float InDeltaTime);
 };

@@ -4,7 +4,7 @@
 	"VersionName": "1.0",
 	"FriendlyName": "Loading Screen System",
 	"Description": "",
-	"Category": "",
+	"Category": "Common",
 	"CreatedBy": "",
 	"CreatedByURL": "",
 	"DocsURL": "",
@@ -19,7 +19,7 @@
 			"Name": "LoadingScreenSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen",
-			"WhitelistPlatforms": [
+			"PlatformAllowList": [
 				"Win64"
 			]
 		}

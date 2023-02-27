@@ -99,13 +99,13 @@ void SLoadingLayout::Construct(const FArguments& InArgs)
 				]
 
 				+ SHorizontalBox::Slot()
-				.Padding(FMargin(40.0f, 0.0f, 0, 0))
+				//.Padding(FMargin(40.0f, 0.0f, 0, 0))
 				.AutoWidth()
 				.VAlign(VAlign_Center)
 				[
 					SNew(STextBlock)
-					.Text(LoadingScreenSettingsStruct.LoadingText)
 					.Font(LoadingFontInfo)
+					.Text(LoadingScreenSettingsStruct.LoadingText)
 				]
 
 				+ SHorizontalBox::Slot()

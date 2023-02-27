@@ -73,8 +73,6 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 void AMMORPGCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// Calculate FPS
-	UE_LOG(LogTemp, Warning, TEXT("FPS: %f"), (1.0f / DeltaTime));
 }
 
 // Called to bind functionality to input
