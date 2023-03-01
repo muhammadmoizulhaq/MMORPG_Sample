@@ -6,6 +6,7 @@
 #include "Engine/UserDefinedStruct.h"
 #include "MMORPGStructs.generated.h"
 
+/** TODO: change this or update according to requirement. */
 USTRUCT(BlueprintType, Category = "UI")
 struct FSettingsStruct
 {
