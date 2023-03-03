@@ -3,3 +3,7 @@
 #include "MMORPGPlayerController.h"
 #include "MMORPGCharacter.h"
 #include "MMORPGHUD.h"
+
+AMMORPGPlayerController::AMMORPGPlayerController()
+{
+}

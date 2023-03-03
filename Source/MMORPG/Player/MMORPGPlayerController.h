@@ -13,11 +13,14 @@
 #include "GameFramework/PlayerController.h"
 #include "MMORPGPlayerController.generated.h"
 
-class UInputMappingContext;
-class UInputAction;
+class AMMORPGHUD;
 
 UCLASS()
 class MMORPG_API AMMORPGPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+protected:
+	AMMORPGPlayerController();
+private:
+	TSoftClassPtr<AMMORPGHUD> MyHUDClassPtr;
 };

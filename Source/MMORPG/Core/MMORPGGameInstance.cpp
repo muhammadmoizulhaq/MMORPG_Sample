@@ -7,7 +7,7 @@ DEFINE_LOG_CATEGORY(MMORPGGameInstance);
 void UMMORPGGameInstance::Init()
 {
 	// Register delegate for ticker callback
-	TickDelegateHandle = FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UMMORPGGameInstance::Tick));
+	TickDelegateHandle = FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UMMORPGGameInstance::Tick));
 	// Parent
 	Super::Init();
 }
@@ -15,7 +15,7 @@ void UMMORPGGameInstance::Init()
 void UMMORPGGameInstance::Shutdown()
 {
 	// Unregister ticker delegate
-	FTicker::GetCoreTicker().RemoveTicker(TickDelegateHandle);
+	FTSTicker::GetCoreTicker().RemoveTicker(TickDelegateHandle);
 	// Parent
 	Super::Shutdown();
 }

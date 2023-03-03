@@ -29,7 +29,8 @@ void SLoadingLayout::Construct(const FArguments& InArgs)
 	if (LoadingScreenSettingsStruct.Images.Num() > 0)
 	{
 		const int32 ImageIndex = FMath::RandRange(0, LoadingScreenSettingsStruct.Images.Num() - 1);
-		const FStringAssetReference& ImageAsset = LoadingScreenSettingsStruct.Images[ImageIndex];
+		// const FStringAssetReference& ImageAsset = LoadingScreenSettingsStruct.Images[ImageIndex];
+		const FSoftObjectPath& ImageAsset = LoadingScreenSettingsStruct.Images[ImageIndex];
 		UObject* ImageObject = ImageAsset.TryLoad();
 		if (UTexture2D* LoadingImage = Cast<UTexture2D>(ImageObject))
 		{
