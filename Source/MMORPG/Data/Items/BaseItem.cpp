@@ -9,5 +9,5 @@ FString UBaseItem::GetIdentifierString() const
 
 FPrimaryAssetId UBaseItem::GetPrimaryAssetId() const
 {
-	return FPrimaryAssetId(ItemType, GetFName());
+	return FPrimaryAssetId(ItemType, GetFName()/*FName(*GetFName().ToString().Append("_C"))*/);
 }

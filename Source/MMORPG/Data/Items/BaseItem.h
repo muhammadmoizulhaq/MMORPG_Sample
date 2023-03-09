@@ -14,7 +14,7 @@ class MMORPG_API UBaseItem : public UPrimaryDataAsset
 public:
 	UBaseItem() {  }
 	/** Type of this item, set in native parent class */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data|Item")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FPrimaryAssetType ItemType;
 	/** Returns the logical name, equivalent to the primary asset id */
 	UFUNCTION(BlueprintCallable, Category = Item)

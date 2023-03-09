@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/Items/BaseItem.h"
+#include "Utils/MMORPGEnums.h"
 #include "WidgetItem.generated.h"
 
 UCLASS()
@@ -15,4 +16,8 @@ public:
 	{
 		ItemType = UMMORPGAssetManager::WidgetItemType;
 	}
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data|Items|Widgets")
+	TMap<EWidgetEnum, TSoftClassPtr<UUserWidget>> WidgetToShow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data|Items|Popups")
+	TMap<EPopUpEnum, TSoftClassPtr<UUserWidget>> PopupToShow;
 };
