@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Data/MMORPGAssetManager.h"
-#include "Data/Items/BaseItem.h"
+#include "BaseItem.h"
 
 const FPrimaryAssetType UMMORPGAssetManager::WidgetItemType = TEXT("Widget");
 

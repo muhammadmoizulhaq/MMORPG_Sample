@@ -10,7 +10,7 @@ public class MMORPG : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "UMG" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "UMG", "GameplayAbilities", "GameplayTags", "GameplayTasks" });
 
         PublicIncludePaths.AddRange(new string[]
         {
@@ -19,6 +19,9 @@ public class MMORPG : ModuleRules
             "MMORPG/Player",
             "MMORPG/UI",
             "MMORPG/Utils",
+            "MMORPG/Data",
+            "MMORPG/Data/Items",
+            "MMORPG/AbilitySystem",
         });
 
         // Uncomment if you are using online features
