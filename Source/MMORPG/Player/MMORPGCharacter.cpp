@@ -4,13 +4,24 @@
 #include "MMORPGPlayerController.h"
 #include "Components/InputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
+#include "AbilitySystem/MMORPGAbilitySystemComponent.h"
+#include "AbilitySystem/Abilities/BaseGameplayAbility.h"
+#include "AbilitySystem/AttributeSet/MMORPGBaseAttributeSet.h"
 #include "EnhancedInputComponent.h"
 
 // Sets default values
-AMMORPGCharacter::AMMORPGCharacter()
+AMMORPGCharacter::AMMORPGCharacter(const class FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
+	bAlwaysRelevant = true;
+
+	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("State.RemoveOnDeath"));
 }
 
 // Called when the game starts or when spawned
@@ -18,13 +29,7 @@ void AMMORPGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	// Setting up a mapping context for EnhancedInput
-	/*if (APlayerController* MyPlayercontroller = Cast<APlayerController>(GetController()))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* MySubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MyPlayercontroller->GetLocalPlayer()))
-		{
-			MySubsystem->AddMappingContext(IMC_MyCharacter, 0);
-		}
-	}*/
+	
 	if (APlayerController* MyPlayercontroller = Cast<APlayerController>(GetController()))
 	{
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(MyPlayercontroller->GetLocalPlayer())->AddMappingContext(IMC_MyCharacter, 0);
@@ -34,17 +39,6 @@ void AMMORPGCharacter::BeginPlay()
 void AMMORPGCharacter::Move(const FInputActionValue& Value)
 {
 	//if (ActionState != EActionState::EAS_Unoccupied)return;
-	/*const FVector2D MyDirectionValue = Value.Get<FVector2D>();
-	if (GetController() && (MyDirectionValue != FVector2D(0.0f, 0.0f)))
-	{
-		const FRotator MyRotation = GetController()->GetControlRotation();
-		const FRotator MyYawRotation(0.0f, MyRotation.Yaw, 0.0f);
-
-		const FVector MyForwardDirection = FRotationMatrix(MyYawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(MyForwardDirection, MyDirectionValue.Y);
-		const FVector MyRightDirection = FRotationMatrix(MyYawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(MyRightDirection, MyDirectionValue.X);
-	}*/
 	const FVector2D MyDirectionValue = Value.Get<FVector2D>();
 	if (MyDirectionValue != FVector2D(0.0f, 0.0f))
 	{
@@ -69,10 +63,24 @@ void AMMORPGCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-// Called every frame
-void AMMORPGCharacter::Tick(float DeltaTime)
+void AMMORPGCharacter::AddCharacterAttributies()
 {
-	Super::Tick(DeltaTime);
+}
+
+void AMMORPGCharacter::InitializeAttributes()
+{
+}
+
+void AMMORPGCharacter::AddStartupEffects()
+{
+}
+
+void AMMORPGCharacter::SetHealth(float InHealth)
+{
+}
+
+void AMMORPGCharacter::SetMana(float InMana)
+{
 }
 
 // Called to bind functionality to input
@@ -85,4 +93,105 @@ void AMMORPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		MyEnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMMORPGCharacter::Move);
 		MyEnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMMORPGCharacter::Look);
 	}
+}
+
+UAbilitySystemComponent* AMMORPGCharacter::GetAbilitySystemComponent() const
+{
+	return MMORPGAbilitySystemComponent.Get();
+}
+
+bool AMMORPGCharacter::IsAlive() const
+{
+	return GetHealth() > 0.0f;
+}
+
+int32 AMMORPGCharacter::GetAbilityLevel(EMMORPGAbilityID AbilityID) const
+{
+	return int32();
+}
+
+void AMMORPGCharacter::RemoveCharacterAbilities()
+{
+	if (GetLocalRole() != ROLE_Authority || !MMORPGAbilitySystemComponent.IsValid() || !MMORPGAbilitySystemComponent->bIsCharacterAbilitiesGiven)
+	{
+		return;
+	}
+	TArray<FGameplayAbilitySpecHandle> GameplayAbilitySpecHandleToRemove;
+	for (const FGameplayAbilitySpec& Spec : MMORPGAbilitySystemComponent->GetActivatableAbilities())
+	{
+		if ((Spec.SourceObject == this) && (BaseGameplayAbility.Contains(Spec.Ability->GetClass())))
+		{
+			GameplayAbilitySpecHandleToRemove.Add(Spec.Handle);
+		}
+	}
+	for (int32 i = 0; i < GameplayAbilitySpecHandleToRemove.Num(); i++)
+	{
+		MMORPGAbilitySystemComponent->ClearAbility(GameplayAbilitySpecHandleToRemove[i]);
+	}
+	MMORPGAbilitySystemComponent->bIsCharacterAbilitiesGiven = false;
+}
+
+void AMMORPGCharacter::Die()
+{
+	RemoveCharacterAbilities();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	/*GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);*/
+
+	CharacterDiedDelegate.Broadcast(this);
+	
+	if (MMORPGAbilitySystemComponent.IsValid())
+	{
+		MMORPGAbilitySystemComponent->CancelAbilities();
+		FGameplayTagContainer MyGameplayTagContainer;
+		MyGameplayTagContainer.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectRemoved = MMORPGAbilitySystemComponent->RemoveActiveEffectsWithTags(MyGameplayTagContainer);
+		MMORPGAbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+	else
+	{
+		FinishDying();
+	}
+}
+
+void AMMORPGCharacter::FinishDying()
+{
+	Destroy();
+}
+
+float AMMORPGCharacter::GetHealth() const
+{
+	if (MMORPGBaseAttributeSet.IsValid()) 
+		return MMORPGBaseAttributeSet->GetHealth();
+
+	return 0.0f;
+}
+
+float AMMORPGCharacter::GetMaxHealth() const
+{
+	if (MMORPGBaseAttributeSet.IsValid())
+		return MMORPGBaseAttributeSet->GetMaxHealth();
+
+	return 0.0f;
+}
+
+float AMMORPGCharacter::GetMana() const
+{
+	if (MMORPGBaseAttributeSet.IsValid())
+		return MMORPGBaseAttributeSet->GetMana();
+
+	return 0.0f;
+}
+
+float AMMORPGCharacter::GetMaxMana() const
+{
+	if (MMORPGBaseAttributeSet.IsValid())
+		return MMORPGBaseAttributeSet->GetMaxMana();
+
+	return 0.0f;
 }

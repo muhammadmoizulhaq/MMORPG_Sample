@@ -22,6 +22,8 @@ public class MMORPG : ModuleRules
             "MMORPG/Data",
             "MMORPG/Data/Items",
             "MMORPG/AbilitySystem",
+            "MMORPG/AbilitySystem/AttributeSet",
+            "MMORPG/AbilitySystem/Abilities",
         });
 
         // Uncomment if you are using online features

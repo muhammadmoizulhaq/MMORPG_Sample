@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Data/MMORPGAssetManager.h"
+#include "AbilitySystemGlobals.h"
 #include "BaseItem.h"
 
 const FPrimaryAssetType UMMORPGAssetManager::WidgetItemType = TEXT("Widget");
@@ -22,6 +23,9 @@ UMMORPGAssetManager& UMMORPGAssetManager::Get()
 void UMMORPGAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
+
+	UAbilitySystemGlobals::Get().InitGlobalData();
+	UE_LOG(LogTemp, Warning, TEXT("Ability System Globals init!"));
 }
 
 UBaseItem* UMMORPGAssetManager::ForceLoadItem(const FPrimaryAssetId& InPrimaryAssetId, bool bLogWarning)

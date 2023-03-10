@@ -4,4 +4,4 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "MMORPGDelegates.generated.h"
+//#include "MMORPGDelegates.generated.h"

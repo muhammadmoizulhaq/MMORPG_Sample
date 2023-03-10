@@ -36,13 +36,21 @@ UENUM(BlueprintType)
 enum class EMMORPGAbilityActivationGroup : uint8
 {
 	// Ability runs independently of all other abilities.
-	Independent,
+	INDEPENDENT = 0 UMETA(DisplayName = "Independent"),
 
 	// Ability is canceled and replaced by other exclusive abilities.
-	Exclusive_Replaceable,
+	EXCLUSIVE_REPLACEABLE = 1 UMETA(DisplayName = "Exclusive Replaceable"),
 
 	// Ability blocks all other exclusive abilities from activating.
-	Exclusive_Blocking,
+	EXCLUSIVE_BLOCKING = 2 UMETA(DisplayName = "Exclusive Blocking"),
 
-	MAX	UMETA(Hidden)
+	MAX = 3	UMETA(Hidden, DisplayName = "Max"),
+};
+
+UENUM(BlueprintType)
+enum class EMMORPGAbilityID : uint8
+{
+	NONE = 0 UMETA(DisplayName = "None"),
+	CONFIRM = 1 UMETA(DisplayName = "Confirm"),
+	CANCEL = 2 UMETA(DisplayName = "Cancel"),
 };

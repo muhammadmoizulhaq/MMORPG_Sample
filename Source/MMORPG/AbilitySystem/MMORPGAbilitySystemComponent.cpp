@@ -7,3 +7,8 @@ UMMORPGAbilitySystemComponent::UMMORPGAbilitySystemComponent(const FObjectInitia
 {
 	FMemory::Memset(ActivationGroupCount, 0, sizeof(ActivationGroupCount));
 }
+
+void UMMORPGAbilitySystemComponent::ReceiveDamage(UMMORPGAbilitySystemComponent* InSource, float InUnmitigatedDamage, float InMitigatedDamage)
+{
+	ReceivedDamageDelegate.Broadcast(InSource, InUnmitigatedDamage, InMitigatedDamage);
+}
